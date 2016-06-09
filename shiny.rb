@@ -1,5 +1,6 @@
 require 'twitter'
 require 'dotenv'
+require "readline"
 
 Dotenv.load __dir__ + '/env_variables.env'
 
@@ -27,15 +28,8 @@ def parse_input(input)
   return arr[0], arr[1..arr.length]
 end
 
-def prepare_promt
-  print "\n"
-  print '> '
-end
-
 init_client
-print '> '
-
-while input = gets do
+while input = Readline.readline("@#{@client.user.name} # ", true)
 
   command, args = parse_input(input)
 
@@ -48,10 +42,18 @@ while input = gets do
     @client.update(args.join(' '))
   when 'show'
     puts 'show'
+  when 'friends'
+    if args[0] != nil
+      friends = @client.friends.take(args[0].to_i)
+    else
+      friends = @client.friends.to_a
+    end
+    friends.each do |friend|
+      puts friend.name
+    end
   else 
     puts 'Unrecognized command'
   end
 
-  prepare_promt
 end
 
