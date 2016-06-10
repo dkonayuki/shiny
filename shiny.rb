@@ -1,6 +1,7 @@
 require 'twitter'
 require 'readline'
 require './config.rb'
+require './command.rb'
 
 def init_client
   @client = Twitter::REST::Client.new(Config.get_config)
@@ -22,11 +23,6 @@ def parse_input(input)
 end
 
 init_client
-#bearer_token = @client.token
-#puts bearer_token
-#oauth = Twitter::OAuth.new(ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"])
-#token = oauth.request_token.token
-#puts token
 
 while input = Readline.readline("@#{@client.user.name} # ", true)
 
@@ -38,18 +34,11 @@ while input = Readline.readline("@#{@client.user.name} # ", true)
 
   case command
   when 'tweet'
-    @client.update(args.join(' '))
-  when 'show'
-    puts 'show'
+    Command.tweet(@client, args)
+  when 'home'
+    Command.home(@client, args)
   when 'friends'
-    if args[0] != nil
-      friends = @client.friends.take(args[0].to_i)
-    else
-      friends = @client.friends.to_a
-    end
-    friends.each do |friend|
-      puts friend.name
-    end
+    Command.friends(@client, args)
   else 
     puts 'Unrecognized command'
   end
