@@ -1,16 +1,9 @@
 require 'twitter'
-require 'dotenv'
-require "readline"
-
-Dotenv.load __dir__ + '/env_variables.env'
+require 'readline'
+require './config.rb'
 
 def init_client
-  @client = Twitter::REST::Client.new do |config|
-    config.consumer_key        = ENV["CONSUMER_KEY"]
-    config.consumer_secret     = ENV["CONSUMER_SECRET"]
-    config.access_token        = ENV["ACCESS_TOKEN"]
-    config.access_token_secret = ENV["ACCESS_TOKEN_SECRET"]
-  end
+  @client = Twitter::REST::Client.new(Config.get_config)
 end
 
 def check_exit?(input)
@@ -29,6 +22,12 @@ def parse_input(input)
 end
 
 init_client
+#bearer_token = @client.token
+#puts bearer_token
+#oauth = Twitter::OAuth.new(ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"])
+#token = oauth.request_token.token
+#puts token
+
 while input = Readline.readline("@#{@client.user.name} # ", true)
 
   command, args = parse_input(input)
