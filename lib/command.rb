@@ -1,10 +1,12 @@
+require_relative 'ext/string'
+
 module Shiny
   module Command
     extend self
 
     def print_tweet(tweet)
       puts "#{tweet.text}"
-      puts "₪:#{tweet.retweet_count} ❤:#{tweet.favorite_count}"
+      puts "₪:#{tweet.retweet_count.to_s.base03} ❤:#{tweet.favorite_count}"
       puts ""
     end
 
