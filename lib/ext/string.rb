@@ -2,7 +2,11 @@ require_relative '../paint.rb'
 require 'paint'
 
 class String
-  def base03
-    Paint[self, Shiny::Paint::COLORS[:base03]]
+
+  Shiny::Paint::COLORS.keys.each do |color|
+    define_method("#{color}") do
+      Paint[self, Shiny::Paint::COLORS[color]]
+    end
   end
+
 end
