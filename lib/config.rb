@@ -22,7 +22,7 @@ module Shiny
 
         Launchy.open(request_token.authorize_url)
 
-        pin = gets 
+        pin = Readline.readline('Please enter pin code: ', false)
 
         access_token = request_token.get_access_token(:oauth_verifier => pin)
         oauth_token, oauth_token_secret = access_token.token, access_token.secret
