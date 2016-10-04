@@ -3,6 +3,7 @@ require 'twitter'
 require_relative './config.rb'
 require_relative './ext/string'
 require_relative './ext/time'
+require_relative './utilities.rb'
 
 module Shiny
   class Client
@@ -11,13 +12,6 @@ module Shiny
     def init
       #@client = Twitter::Streaming::Client.new(Configuration.get_config)
       @client = Twitter::REST::Client.new(Configuration.get_config)
-    end
-
-    def print_tweet(tweet)
-      puts "#{tweet.user.name.orange.bold} @#{tweet.user.screen_name} #{tweet.created_at.time_ago.base03}"
-      puts "#{tweet.text}"
-      puts "₪:#{tweet.retweet_count.to_s.blue} ❤:#{tweet.favorite_count.to_s.red}"
-      puts ""
     end
 
     def home(args)
@@ -32,12 +26,16 @@ module Shiny
       tweets.sort_by! { |tweet| tweet.created_at.to_i }
 
       tweets.each do |tweet|
-        print_tweet(tweet)
+        Utilities.print_tweet(tweet)
       end
     end
 
     def favorite(args)
 
+    end
+
+    def delete(args)
+      @client.destroy_status(args[0])
     end
 
     def tweet(args)

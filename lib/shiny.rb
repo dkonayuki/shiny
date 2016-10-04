@@ -1,6 +1,7 @@
 require 'readline'
 require_relative './client.rb'
 require_relative './stream.rb'
+require_relative './utilities.rb'
 
 module Shiny
   extend self
@@ -49,11 +50,9 @@ module Shiny
       @stream.user do |object|
         case object
         when Twitter::Tweet
-          puts "It's a tweet!"
+          Utilities.print_tweet(object)
         when Twitter::DirectMessage
           puts "It's a direct message!"
-        when Twitter::Streaming::StallWarning
-          warn "Falling behind!"
         end
       end
     }
@@ -74,6 +73,8 @@ module Shiny
           @client.home(args)
         when 'friends'
           @client.friends(args)
+        when 'delete'
+          @client.delete(args)
         else 
           puts 'Unrecognized command'
         end
