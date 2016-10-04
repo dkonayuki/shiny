@@ -1,13 +1,12 @@
-require 'twitter'
 require 'readline'
-require __dir__ + '/config'
-require __dir__ + '/command'
+require_relative './client.rb'
 
 module Shiny
   extend self
 
   def init_client
-    @client = Twitter::REST::Client.new(Configuration.get_config)
+    @client = Client.instance
+    @client.init
   end
 
   def check_exit?(input)
@@ -32,7 +31,7 @@ module Shiny
   def start
     init_client
 
-    while input = Readline.readline("@#{@client.user.name} # ", true)
+    while input = Readline.readline("@#{@client.screen_name} # ", true)
 
       command, args = parse_input(input)
 
@@ -42,11 +41,11 @@ module Shiny
 
       case command
       when 'tweet'
-        Command.tweet(@client, args)
+        @client.tweet(args)
       when 'home'
-        Command.home(@client, args)
+        @client.home(args)
       when 'friends'
-        Command.friends(@client, args)
+        @client.friends(args)
       else 
         puts 'Unrecognized command'
       end

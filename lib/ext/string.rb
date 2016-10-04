@@ -9,4 +9,8 @@ class String
     end
   end
 
+  def bold
+    Paint[self, :bold]
+  end
+
 end
