@@ -6,8 +6,8 @@ module Shiny
     extend self
 
     def print_tweet(tweet)
-      puts "#{tweet.created_at.time_ago}"
-      puts "#{tweet.text}"
+      puts "#{tweet.user.name} @#{tweet.user.screen_name} #{tweet.created_at.time_ago.blue}"
+      puts "#{tweet.text.base00}"
       puts "₪:#{tweet.retweet_count.to_s.base03} ❤:#{tweet.favorite_count.to_s.orange}"
       puts ""
     end
