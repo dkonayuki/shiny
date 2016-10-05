@@ -10,7 +10,6 @@ module Shiny
     include Singleton
 
     def init
-      #@client = Twitter::Streaming::Client.new(Configuration.get_config)
       @client = Twitter::REST::Client.new(Configuration.get_config)
     end
 
@@ -26,7 +25,7 @@ module Shiny
       tweets.sort_by! { |tweet| tweet.created_at.to_i }
 
       tweets.each do |tweet|
-        Utilities.print_tweet(tweet)
+        Utilities.print_tweet(tweet, { time: :time_ago })
       end
     end
 
