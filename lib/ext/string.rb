@@ -13,4 +13,8 @@ class String
     Paint[self, :bold]
   end
 
+  def italic
+    Paint[self, :italic]
+  end
+
 end

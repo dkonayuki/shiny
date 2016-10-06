@@ -13,13 +13,8 @@ module Shiny
       @client = Twitter::REST::Client.new(Configuration.get_config)
     end
 
-    def home(args)
-      if args[0] == nil
-        # return the 20 most recent tweets
-        tweets = @client.home_timeline
-      else
-        tweets = @client.home_timeline({count: args[0]})
-      end
+    def home(count = 20)
+      tweets = @client.home_timeline({count: count})
 
       # asc order
       tweets.sort_by! { |tweet| tweet.created_at.to_i }
@@ -33,23 +28,40 @@ module Shiny
 
     end
 
-    def delete(args)
-      @client.destroy_status(args[0])
+    def follow(list)
+      begin
+        @client.follow(list)
+        Utilities.print_log("Users followed: #{list.join(',')}.")
+      rescue => e
+        raise "Failed to follow #{list.join(',')}. #{e.message}", e.backtrace
+      end
     end
 
-    def tweet(args)
-      @client.update(args.join(' '))
+    def unfollow(list)
+      begin
+        @client.unfollow(list)
+        Utilities.print_log("Users unfollowed: #{list.join(',')}.")
+      rescue => e
+        raise "Failed to unfollow #{list.join(',')}. #{e.message}", e.backtrace
+      end
     end
 
-    def friends(args)
-      if args[0] != nil
-        friends = @client.friends.take(args[0].to_i)
+    def delete(id)
+      @client.destroy_status(id)
+      Utilities.print_log("Tweet id:#{id} was deleted.")
+    end
+
+    def tweet(message)
+      @client.update(message)
+    end
+
+    def followings(count = 0)
+      if count != 0
+        users = @client.friends.take(count)
       else
-        friends = @client.friends.to_a
+        users = @client.friends.to_a
       end
-      friends.each do |friend|
-        puts friend.name
-      end
+      Utilities.print_followings(users)
     end
 
     def user

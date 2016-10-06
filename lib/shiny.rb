@@ -2,6 +2,7 @@ require 'readline'
 require_relative './client.rb'
 require_relative './stream.rb'
 require_relative './utilities.rb'
+require_relative './logger.rb'
 
 module Shiny
   extend self
@@ -9,11 +10,18 @@ module Shiny
   def init_client
     @client = Client.instance
     @client.init
+    @logger.info('Initialize twitter client')
   end
 
   def init_stream
     @stream = Stream.instance
     @stream.init
+    @logger.info('Initialize twitter stream')
+  end
+
+  def init_logger
+    @logger = Logger.instance
+    @logger.init
   end
 
   def check_exit?(input)
@@ -35,14 +43,18 @@ module Shiny
     return arr[0], arr[1..arr.length]
   end
 
-  # Exit all the threads
+  # Exit all threads
   def terminate
+    @logger.info('Terminate all threads')
     Thread.list.each do |thread|
       thread.exit
     end
   end
 
   def start
+    init_logger
+
+    @logger.info('Shiny started')
     init_client
     init_stream
 
@@ -50,7 +62,7 @@ module Shiny
       @stream.user do |object|
         case object
         when Twitter::Tweet
-          Utilities.print_tweet(object)
+          Utilities.print_stream_tweet(object)
         when Twitter::DirectMessage
           puts "It's a direct message!"
         end
@@ -58,8 +70,10 @@ module Shiny
     }
 
     api_thread = Thread.new {
-      while input = Readline.readline("@#{@client.screen_name} # ", true)
+      prompt = "@#{@client.screen_name} "
+      while input = Readline.readline("#{prompt.base1} #{'$'.base2} ", true)
 
+        @logger.info("Inputed: #{input}")
         command, args = parse_input(input)
 
         if check_exit?(command)
@@ -68,15 +82,23 @@ module Shiny
 
         case command
         when 'tweet'
-          @client.tweet(args)
+          @client.tweet(args.join(' '))
         when 'home'
-          @client.home(args)
-        when 'friends'
-          @client.friends(args)
+          @client.home(args[0].to_i)
+        when 'followings'
+          @client.followings(args == nil ? 0 : args[0].to_i)
         when 'delete'
           @client.delete(args)
+        when 'follow'
+          args.map! { |name| name.gsub(/@/,'') }
+          @logger.info("Call follow method with args: #{args}")
+          @client.follow(args)
+        when 'unfollow'
+          args.map! { |name| name.gsub(/@/,'') }
+          @logger.info("Call unfollow method with args: #{args}")
+          @client.unfollow(args)
         else 
-          puts 'Unrecognized command'
+          puts "Unrecognized command: #{command}"
         end
 
       end
@@ -84,6 +106,10 @@ module Shiny
 
     stream_thread.join
     api_thread.join
-
+  rescue => e
+    @logger.info('Shiny ended') unless @logger.nil?
+    puts e.message
+    puts e.backtrace
+    exit 1
   end
 end
