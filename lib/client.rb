@@ -25,7 +25,7 @@ module Shiny
     end
 
     def favorite(id)
-      @client.favorite([*id])
+      @client.favorite([id])
       Utilities.print_log("Favorited tweet id: #{id}.")
     rescue => e
       raise "Failed to favorite tweet id: #{id}. #{e.message}", e.backtrace
