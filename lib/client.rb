@@ -24,26 +24,32 @@ module Shiny
       end
     end
 
-    def favorite(args)
+    def favorite(id)
+      @client.favorite([*id])
+      Utilities.print_log("Favorited tweet id: #{id}.")
+    rescue => e
+      raise "Failed to favorite tweet id: #{id}. #{e.message}", e.backtrace
+    end
 
+    def unfavorite(id)
+      @client.unfavorite([*id])
+      Utilities.print_log("Unfavorited tweet id: #{id}.")
+    rescue => e
+      raise "Failed to favorite tweet id: #{id}. #{e.message}", e.backtrace
     end
 
     def follow(list)
-      begin
-        @client.follow(list)
-        Utilities.print_log("Users followed: #{list.join(',')}.")
-      rescue => e
-        raise "Failed to follow #{list.join(',')}. #{e.message}", e.backtrace
-      end
+      @client.follow(list)
+      Utilities.print_log("Users followed: #{list.join(',')}.")
+    rescue => e
+      raise "Failed to follow #{list.join(',')}. #{e.message}", e.backtrace
     end
 
     def unfollow(list)
-      begin
-        @client.unfollow(list)
-        Utilities.print_log("Users unfollowed: #{list.join(',')}.")
-      rescue => e
-        raise "Failed to unfollow #{list.join(',')}. #{e.message}", e.backtrace
-      end
+      @client.unfollow(list)
+      Utilities.print_log("Users unfollowed: #{list.join(',')}.")
+    rescue => e
+      raise "Failed to unfollow #{list.join(',')}. #{e.message}", e.backtrace
     end
 
     def delete(id)

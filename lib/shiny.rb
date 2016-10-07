@@ -97,6 +97,10 @@ module Shiny
           args.map! { |name| name.gsub(/@/,'') }
           @logger.info("Call unfollow method with args: #{args}")
           @client.unfollow(args)
+        when 'favorite', 'fav'
+          @client.favorite(args[0].to_i)
+        when 'unfavorite', 'unfav'
+          @client.unfavorite(args[0].to_i)
         else 
           puts "Unrecognized command: #{command}"
         end
