@@ -20,7 +20,7 @@ module Shiny
       tweets.sort_by! { |tweet| tweet.created_at.to_i }
 
       tweets.each do |tweet|
-        Utilities.print_tweet(tweet, { time: :time_ago })
+        Utilities.print_api_tweet(tweet)
       end
     end
 

@@ -12,6 +12,11 @@ module Shiny
       puts "    id:#{tweet.id} ₪:#{tweet.retweet_count.to_s.blue} ❤:#{tweet.favorite_count.to_s.red}"
     end
 
+    def print_api_tweet(tweet)
+      print_tweet(tweet, { time: :time_ago })
+      puts ""
+    end
+
     def print_stream_tweet(tweet)
       puts ""
       print_tweet(tweet)
